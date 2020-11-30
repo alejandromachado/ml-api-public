@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import redis
+from spanish_sentiment_analysis import classifier
 
 ########################################################################
 # COMPLETAR AQUI: Crear conexion a redis y asignarla a la variable "db".
@@ -12,7 +13,7 @@ db = redis.Redis(host='redis', port=6379, db=0)
 # Use classifier.SentimentClassifier de la libreria
 # spanish_sentiment_analysis ya instalada
 ########################################################################
-model = None
+model = classifier.SentimentClassifier()
 ########################################################################
 
 
