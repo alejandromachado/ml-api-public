@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import redis
+import settings
 
 ########################################################################
 # COMPLETAR AQUI: Crear conexion a redis y asignarla a la variable "db".
 ########################################################################
-db = None
+db = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
 ########################################################################
 
 
