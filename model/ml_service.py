@@ -2,6 +2,8 @@
 import redis
 import classifier
 import settings
+import json
+import time
 
 ########################################################################
 # COMPLETAR AQUI: Crear conexion a redis y asignarla a la variable "db".
@@ -41,7 +43,13 @@ def sentiment_from_score(score):
     # COMPLETAR AQUI
     ####################################################################
     sentiment = None
-    raise NotImplementedError
+
+    if score > 0.55:
+        sentiment = "Positivo"
+    elif score > 0.45:
+        sentiment = "Neutral"
+    else:
+        sentiment = "Negativo"
     ####################################################################
 
     return sentiment
@@ -73,7 +81,8 @@ def predict(text):
     # Luego utilice la función "sentiment_from_score" de este módulo
     # para obtener el sentimiento ("sentiment") a partir del score.
     ####################################################################
-    raise NotImplementedError
+    score = model.predict(text)
+    sentiment = sentiment_from_score(score)
     ####################################################################
 
     return sentiment, score
@@ -92,7 +101,7 @@ def classify_process():
         # COMPLETAR AQUI: Obtenga un batch de trabajos encolados, use
         # lrange de Redis. Almacene los trabajos en la variable "queue".
         ##################################################################
-        queue = None
+        queue = db.lrange(settings.REDIS_QUEUE, 0, 9)
         ##################################################################
 
         # Iteramos por cada trabajo obtenido
@@ -107,7 +116,13 @@ def classify_process():
             #       respuesta. Recuerde usar como "key" el "job_id".
             #
             ##############################################################
-            raise NotImplementedError
+            # q = {'text': 'texto a predecir y scorear', 'id': '0'}
+            q = json.loads(q.decode("utf-8"))
+            job_id = q["id"]
+            prediction, score = predict(q["text"])
+
+            response = {"prediction": prediction, "score": score}
+            db.set(job_id, json.dumps(response))
             ##############################################################
 
         ##################################################################
@@ -115,10 +130,11 @@ def classify_process():
         # procesados. Luego duerma durante unos milisengundos antes de
         # pedir por mas trabajos.
         ##################################################################
-        raise NotImplementedError
+        db.ltrim(settings.REDIS_QUEUE, len(queue), -1)
+        time.sleep(2)
         ##################################################################
 
 
 if __name__ == "__main__":
-    print('Launching ML service...')
+    print("Launching ML service...")
     classify_process()
