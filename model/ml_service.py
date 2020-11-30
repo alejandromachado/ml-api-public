@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import redis
-from spanish_sentiment_analysis import classifier
+import classifier
+import settings
 
 ########################################################################
 # COMPLETAR AQUI: Crear conexion a redis y asignarla a la variable "db".
 ########################################################################
-db = redis.Redis(host='redis', port=6379, db=0)
+db = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
 ########################################################################
 
 ########################################################################
