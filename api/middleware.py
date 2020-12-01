@@ -75,9 +75,9 @@ def model_predict(text_data):
             break
         #################################################################
 
-    # print(json.dumps({
-    #     "text": text_data,
-    #     "prediction": prediction,
-    #     "score": score
-    # }))
+    print(json.dumps({
+        "text": text_data,
+        "prediction": prediction,
+        "score": score
+    }))
     return prediction, score
