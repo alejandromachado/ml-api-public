@@ -47,21 +47,21 @@ def index():
     return render_template('index.html', context=context)
 
 
-# @router.route('/feedback', methods=['GET', 'POST'])
-# def feedback():
-#     """
-#     [Práctico 2 - No completar]
-#     Esta función nos permitirá darle feedback a nuestra API
-#     para los casos en los que clasificamos una oración
-#     con un sentimiento erroneo.
-#     """
-#     context = {
-#         'text': None,
-#         'prediction': None,
-#         'score': None,
-#         'success': False
-#     }
-#     return render_template('index.html', context=context)
+@router.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    """
+    [Práctico 2 - No completar]
+    Esta función nos permitirá darle feedback a nuestra API
+    para los casos en los que clasificamos una oración
+    con un sentimiento erroneo.
+    """
+    context = {
+        'text': None,
+        'prediction': None,
+        'score': None,
+        'success': False
+    }
+    return render_template('index.html', context=context)
 
 
 @router.route('/predict', methods=['POST'])
