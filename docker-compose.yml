@@ -10,6 +10,10 @@ services:
       - "80:5000"
     environment:
       - FLASK_DEBUG=1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_QUEUE=service_queue
     depends_on:
       - redis
       - model
@@ -32,9 +36,9 @@ services:
       context: ./model
     command: "python3 /src/ml_service.py"
     environment:
-      - REDIS_HOST='redis'
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_DB=0
-      - REDIS_QUEUE='service_queue'
+      - REDIS_QUEUE=service_queue
     depends_on:
       - redis
