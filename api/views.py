@@ -5,7 +5,7 @@ from flask import (
     jsonify,
     render_template,
 )
-
+import middleware
 
 router = Blueprint('app_name',
                    __name__,
@@ -34,27 +34,32 @@ def index():
         # Luego con los resultados obtenidos, complete el diccionario
         # "context" para mostrar la predicción en el frontend.
         #################################################################
-        raise NotImplementedError
+        prediction, score = middleware.model_predict(text_data)
+
+        context["text"] = text_data
+        context["prediction"] =  prediction
+        context["score"] = score
+        context["success"] = True
         #################################################################
 
     return render_template('index.html', context=context)
 
 
 @router.route('/feedback', methods=['GET', 'POST'])
-def feedback():
-    """
-    [Práctico 2 - No completar]
-    Esta función nos permitirá darle feedback a nuestra API
-    para los casos en los que clasificamos una oración
-    con un sentimiento erroneo.
-    """
-    context = {
-        'text': None,
-        'prediction': None,
-        'score': None,
-        'success': False
-    }
-    return render_template('index.html', context=context)
+# def feedback():
+#     """
+#     [Práctico 2 - No completar]
+#     Esta función nos permitirá darle feedback a nuestra API
+#     para los casos en los que clasificamos una oración
+#     con un sentimiento erroneo.
+#     """
+#     context = {
+#         'text': None,
+#         'prediction': None,
+#         'score': None,
+#         'success': False
+#     }
+#     return render_template('index.html', context=context)
 
 
 @router.route('/predict', methods=['POST'])
