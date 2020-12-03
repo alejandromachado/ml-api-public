@@ -81,3 +81,22 @@ def model_predict(text_data):
         "score": score
     }))
     return prediction, score
+
+def feedback(retrieved_data):
+    """
+    Esta función recibe las predicciones marcadas como erróneas por el usuario,
+    las encola en Redis para ser guardadas.
+
+    Attributes
+    ----------
+    data : str
+        JSON como string con la data de la predicción.
+    """
+    # Prepare data
+    job_id = str(uuid.uuid4())
+    task = { "id": job_id, "data": retrieved_data}
+
+    # Send data to broker
+    db.rpush(settings.REDIS_QUEUE_FEEDBACK, json.dumps(task))
+
+    print(json.dumps(task))
