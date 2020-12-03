@@ -5,7 +5,8 @@ from flask import (
     jsonify,
     render_template,
 )
-from middleware import model_predict
+import json
+import middleware
 
 router = Blueprint('app_name',
                    __name__,
@@ -34,7 +35,7 @@ def index():
         # Luego con los resultados obtenidos, complete el diccionario
         # "context" para mostrar la predicción en el frontend.
         #################################################################
-        prediction, score = model_predict(text_data)
+        prediction, score = middleware.model_predict(text_data)
 
         context = {
             'text': text_data,
@@ -55,6 +56,14 @@ def feedback():
     para los casos en los que clasificamos una oración
     con un sentimiento erroneo.
     """
+    if request.method == 'POST':
+        data = {
+            'text': request.form.get('text'),
+            'prediction': request.form.get('prediction'),
+            'score': request.form.get('score', type=float)
+        }
+        middleware.feedback(json.dumps(data))
+
     context = {
         'text': None,
         'prediction': None,
@@ -87,7 +96,7 @@ def predict():
         # obtenidos.
         #################################################################
         text_data = request.args.get('text')
-        prediction, score = model_predict(text_data)
+        prediction, score = middleware.model_predict(text_data)
 
         rpse = {
             'success': True,
