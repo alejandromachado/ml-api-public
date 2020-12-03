@@ -14,17 +14,17 @@ services:
       - REDIS_PORT=6379
       - REDIS_DB=0
       - REDIS_QUEUE=service_queue
+      - REDIS_QUEUE_FEEDBACK=feedback_queue
     depends_on:
       - redis
       - model
-    volumes:
-      - ./feedback:/src/feedback
+      - feedback
     tty: true
-    # logging:
-    #   driver: "gelf"
-    #   options:
-    #     gelf-address: "udp://localhost:12201"
-    #     tag: "api-logs"
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://localhost:12201"
+        tag: "api-logs"
 
   redis:
     image: redis:5.0.6
@@ -40,5 +40,21 @@ services:
       - REDIS_PORT=6379
       - REDIS_DB=0
       - REDIS_QUEUE=service_queue
+    depends_on:
+      - redis
+
+  feedback:
+    image: ml_feedback
+    container_name: ml_feedback
+    build:
+      context: ./feedback
+    command: "python3 /src/ml_feedback.py"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_QUEUE_FEEDBACK=feedback_queue
+    volumes:
+      - ./data:/data/
     depends_on:
       - redis
